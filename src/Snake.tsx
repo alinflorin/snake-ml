@@ -21,6 +21,7 @@ interface GameState {
   reward: Coords;
   started: boolean;
   canPress: boolean;
+  toAdd: Coords[];
 }
 
 const getRandomRewardCoords = (n: number, snakeArray: Coords[]) => {
@@ -95,6 +96,7 @@ export const Snake = (props: SnakeProps) => {
       reward: rewardCoords,
       matrix: generateMatrix(props.size, snakeArray, rewardCoords),
       canPress: true,
+      toAdd: []
     };
   });
 
@@ -103,6 +105,9 @@ export const Snake = (props: SnakeProps) => {
       return;
     }
     try {
+      let reward = gameState.reward;
+      let toAdd = gameState.toAdd;
+
       const newSnakeArray = [
         ...gameState.snake.map((x) => ({ i: x.i, j: x.j } as Coords)),
       ];
@@ -138,14 +143,30 @@ export const Snake = (props: SnakeProps) => {
       }
 
 
+      const toRemove: number[] = [];
+      for (let i = 0; i < toAdd.length; i++) {
+        const lastSnakeEl = newSnakeArray[newSnakeArray.length - 1];
+        const el = toAdd[i];
+        if (lastSnakeEl.i === el.i && lastSnakeEl.j === el.j) {
+          toRemove.push(i);
+          newSnakeArray.push({i: el.i, j: el.j});
+        }
+      }
+
+      for (const tr of toRemove) {
+        toAdd.splice(tr, 1);
+      }
+
 
       for (let i = 1; i < gameState.snake.length; i++) {
         newSnakeArray[i].i = gameState.snake[i - 1].i;
         newSnakeArray[i].j = gameState.snake[i - 1].j;
       }
 
-      let reward = gameState.reward;
+      
+      
       if (newSnakeArray[0].i === gameState.reward.i && newSnakeArray[0].j === gameState.reward.j) {
+        toAdd.push({i: gameState.reward.i, j: gameState.reward.j});
         reward = getRandomRewardCoords(props.size, newSnakeArray);
       }
 
@@ -155,6 +176,7 @@ export const Snake = (props: SnakeProps) => {
         matrix: generateMatrix(props.size, newSnakeArray, reward),
         canPress: true,
         reward: reward,
+        toAdd: [...toAdd]
       });
     } catch (err) {
       console.log(err);
