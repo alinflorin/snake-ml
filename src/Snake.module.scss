@@ -1,0 +1,35 @@
+.Snake {
+  width: 100%;
+  height: 100%;
+  background: gray;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.Row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.Cell {
+  background: initial;
+}
+
+.Cell_B {
+  background: green;
+}
+
+.Cell_H {
+  background: lightgreen !important;
+}
+
+.Cell_R {
+  background: purple;
+}
+
+.Cell_E {
+  background: initial;
+}
